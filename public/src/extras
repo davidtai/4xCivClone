@@ -1,0 +1,306 @@
+doodadSpriteFrameConfigs = []
+		Async.series(
+			()=>
+				for x in [0...width]
+					for y in [0...height]
+						spriteFrames = transitionSpriteFrameFunction(x, y, tileMap)
+						for spriteFrame in spriteFrames
+							if spriteFrame?
+								spriteFrameRect = spriteFrame.getRect()
+								spriteFrameOffset = spriteFrame.getOffset()
+								ctx.drawImage(
+									spriteFrame.getTexture(), 
+									spriteFrameRect.origin.x, 
+									spriteFrameRect.origin.y, 
+									spriteFrameRect.size.width, 
+									spriteFrameRect.size.height,
+									x * tileSize.width + spriteFrameOffset.x,
+									y * tileSize.height - @buffer.height + spriteFrameOffset.y,
+									spriteFrameRect.size.width,
+									spriteFrameRect.size.height)
+			()=>
+				for x in [0...width]
+					for y in [0...height]
+						spriteFramesConfigs = doodadsSpriteFrameFunction(x, y, tileMap)
+						for spriteFrameConfig in spriteFramesConfigs
+							spriteFrame = spriteFrameConfig.spriteFrame
+							spriteFrameOffset = spriteFrame.getOffset()						
+							spriteFrameConfig.x = x * tileSize.width + spriteFrameConfig.x + spriteFrameOffset.x + tileSize.width
+							spriteFrameConfig.z = y * tileSize.height + spriteFrameConfig.y
+							spriteFrameConfig.y = spriteFrameConfig.z - spriteFrameOffset.y - @buffer.height
+						doodadSpriteFrameConfigs = doodadSpriteFrameConfigs.concat(spriteFramesConfigs)
+			()=>
+				doodadSpriteFrameConfigs.sort((a,b)->
+					return a.z-b.z
+				)
+			()=>
+				for doodadSpriteFrameConfig in doodadSpriteFrameConfigs
+					doodadSpriteFrame = doodadSpriteFrameConfig.spriteFrame
+					doodadSpriteFrameRect = doodadSpriteFrame.getRect()	
+					ctx2.drawImage(
+						doodadSpriteFrame.getTexture(), 
+						doodadSpriteFrameRect.origin.x, 
+						doodadSpriteFrameRect.origin.y, 
+						doodadSpriteFrameRect.size.width, 
+						doodadSpriteFrameRect.size.height,
+						doodadSpriteFrameConfig.x,
+						doodadSpriteFrameConfig.y,
+						doodadSpriteFrameRect.size.width,
+						doodadSpriteFrameRect.size.height)
+			()=>
+				ctx.restore()
+				ctx2.restore()
+			)
+
+
+
+
+
+
+		sprites = background.getSprites()
+		sprites2 = background.getSprites()
+		bg1 = sprites[0]
+		bg2 = sprites2[0]
+		fg1 = sprites[1]
+		fg2 = sprites2[1]
+
+		bg1.setAnchorPoint(1, 0)
+		bg2.setAnchorPoint(1, 0)
+		fg1.setAnchorPoint(1, 0)
+		fg2.setAnchorPoint(1, 0)
+		#bg3.setAnchorPoint(1, 0)
+		#bg4.setAnchorPoint(1, 0)
+
+		fg1.setPosition(new cc.Point(-@tileSize.width, 0))
+		bg2.setPosition(new cc.Point(-@worldSize.width, 0))
+		fg2.setPosition(new cc.Point(-@worldSize.width-@tileSize.width, 0))
+		#bg3.setPosition(new cc.Point(0, -@worldSize.height))
+		#bg4.setPosition(new cc.Point(-@worldSize.width, -@worldSize.height))
+
+		layerSprite.addChild(bg1, 0)
+		layerSprite.addChild(bg2, 0)
+		layerSprite.addChild(fg1, 0)
+		layerSprite.addChild(fg2, 0)
+		#layerSprite.addChild(bg3, 0)
+		#layerSprite.addChild(bg4, 0)
+
+		textureCache = @cc.TextureCache.getInstance()
+
+makeBuffer = (width, height, insertAfterSelector)->
+	buffer = $('<canvas />')[0]
+	buffer.width = width
+	buffer.height = height
+	if insertAfterSelector 
+		$(buffer).insertAfter($(insertAfterSelector).css('display', 'inline-block')[0]).css({width:768, height:768, display:'inline-block', left: 1024})
+	return buffer
+
+@Background = class Background
+	constructor: (@options)->
+		tileMap = @options.tileMap
+		tileMapSize = @options.tileMapSize
+		spatialHash = @options.spatialHash
+		tileSpriteFrameFunction = @options.tileSpriteFrameFunction
+		transitionSpriteFrameFunction = @options.transitionSpriteFrameFunction
+		doodadsSpriteFrameFunction = @options.doodadsSpriteFrameFunction
+		tileSize = @options.tileSize
+
+		width = tileMapSize.width
+		height = tileMapSize.height
+		
+		@buffer = makeBuffer(width * tileSize.width, height * tileSize.height, 'div')
+		@buffer2 = makeBuffer((width + 2) * tileSize.width, height * tileSize.height)
+
+		ctx = @buffer.getContext('2d')
+		ctx.translate(0, @buffer.height)
+
+		ctx2 = @buffer2.getContext('2d')
+		ctx2.translate(0, @buffer2.height)
+		doodadSpriteFrameConfigs = []
+		for x in [0...width]
+			for y in [0...height]
+				spriteFrames = tileSpriteFrameFunction(x, y, tileMap)
+				for spriteFrame in spriteFrames
+					if spriteFrame?
+						spriteFrameRect = spriteFrame.getRect()
+						spriteFrameOffset = spriteFrame.getOffset()
+						ctx.drawImage(
+							spriteFrame.getTexture(), 
+							spriteFrameRect.origin.x, 
+							spriteFrameRect.origin.y, 
+							spriteFrameRect.size.width, 
+							spriteFrameRect.size.height,
+							x * tileSize.width + spriteFrameOffset.x,
+							y * tileSize.height - @buffer.height + spriteFrameOffset.y,
+							spriteFrameRect.size.width,
+							spriteFrameRect.size.height)
+		Async.series(
+			()=>
+				for x in [0...width]
+					for y in [0...height]
+						spriteFrames = transitionSpriteFrameFunction(x, y, tileMap)
+						for spriteFrame in spriteFrames
+							if spriteFrame?
+								spriteFrameRect = spriteFrame.getRect()
+								spriteFrameOffset = spriteFrame.getOffset()
+								ctx.drawImage(
+									spriteFrame.getTexture(), 
+									spriteFrameRect.origin.x, 
+									spriteFrameRect.origin.y, 
+									spriteFrameRect.size.width, 
+									spriteFrameRect.size.height,
+									x * tileSize.width + spriteFrameOffset.x,
+									y * tileSize.height - @buffer.height + spriteFrameOffset.y,
+									spriteFrameRect.size.width,
+									spriteFrameRect.size.height)
+			()=>
+				for x in [0...width]
+					for y in [0...height]
+						spriteFramesConfigs = doodadsSpriteFrameFunction(x, y, tileMap)
+						for spriteFrameConfig in spriteFramesConfigs
+							spriteFrame = spriteFrameConfig.spriteFrame
+							spriteFrameOffset = spriteFrame.getOffset()						
+							spriteFrameConfig.x = x * tileSize.width + spriteFrameConfig.x + spriteFrameOffset.x + tileSize.width
+							spriteFrameConfig.z = y * tileSize.height + spriteFrameConfig.y
+							spriteFrameConfig.y = spriteFrameConfig.z - spriteFrameOffset.y - @buffer.height
+						doodadSpriteFrameConfigs = doodadSpriteFrameConfigs.concat(spriteFramesConfigs)
+			()=>
+				doodadSpriteFrameConfigs.sort((a,b)->
+					return a.z-b.z
+				)
+			()=>
+				for doodadSpriteFrameConfig in doodadSpriteFrameConfigs
+					doodadSpriteFrame = doodadSpriteFrameConfig.spriteFrame
+					doodadSpriteFrameRect = doodadSpriteFrame.getRect()	
+					ctx2.drawImage(
+						doodadSpriteFrame.getTexture(), 
+						doodadSpriteFrameRect.origin.x, 
+						doodadSpriteFrameRect.origin.y, 
+						doodadSpriteFrameRect.size.width, 
+						doodadSpriteFrameRect.size.height,
+						doodadSpriteFrameConfig.x,
+						doodadSpriteFrameConfig.y,
+						doodadSpriteFrameRect.size.width,
+						doodadSpriteFrameRect.size.height)
+			()=>
+				ctx.restore()
+				ctx2.restore()
+			)
+	getSprites: ()->
+		return [new cc.Sprite.createWithTexture(@buffer), new cc.Sprite.createWithTexture(@buffer2)]
+
+		textureCache = @cc.TextureCache.getInstance()
+
+makeBuffer = (width, height, insertAfterSelector)->
+	buffer = $('<canvas />')[0]
+	buffer.width = width
+	buffer.height = height
+	if insertAfterSelector 
+		$(buffer).insertAfter($(insertAfterSelector).css('display', 'inline-block')[0]).css({width:768, height:768, display:'inline-block', left: 1024})
+	return buffer
+
+@Background =
+	create: (@options)->
+		tileMap = @options.tileMap
+		tileMapSize = @options.tileMapSize
+		tileSize = @options.tileSize
+
+		parentSprite = @options.parentSprite
+		spatialHash = @options.spatialHash
+
+		tileSpriteFrameFunction = @options.tileSpriteFrameFunction
+		transitionSpriteFrameFunction = @options.transitionSpriteFrameFunction
+		doodadsSpriteFrameFunction = @options.doodadsSpriteFrameFunction
+
+		width = tileMapSize.width
+		height = tileMapSize.height
+		
+		bgBuffer = makeBuffer(width * tileSize.width, height * tileSize.height, 'div')
+		fgBuffer = makeBuffer((width + 2) * tileSize.width, height * tileSize.height)
+
+		ctx = bgBuffer.getContext('2d')
+		ctx.translate(0, bgBuffer.height)
+
+		ctx2 = fgBuffer.getContext('2d')
+		ctx2.translate(0, fgBuffer.height)
+		doodadSpriteFrameConfigs = []
+		for x in [0...width]
+			for y in [0...height]
+				spriteFrames = tileSpriteFrameFunction(x, y, tileMap)
+				for spriteFrame in spriteFrames
+					if spriteFrame?
+						spriteFrameRect = spriteFrame.getRect()
+						spriteFrameOffset = spriteFrame.getOffset()
+						ctx.drawImage(
+							spriteFrame.getTexture(), 
+							spriteFrameRect.origin.x, 
+							spriteFrameRect.origin.y, 
+							spriteFrameRect.size.width, 
+							spriteFrameRect.size.height,
+							x * tileSize.width + spriteFrameOffset.x,
+							y * tileSize.height - bgBuffer.height + spriteFrameOffset.y,
+							spriteFrameRect.size.width,
+							spriteFrameRect.size.height)
+		Async.series(
+			()=>
+				for x in [0...width]
+					for y in [0...height]
+						spriteFrames = transitionSpriteFrameFunction(x, y, tileMap)
+						for spriteFrame in spriteFrames
+							if spriteFrame?
+								spriteFrameRect = spriteFrame.getRect()
+								spriteFrameOffset = spriteFrame.getOffset()
+								ctx.drawImage(
+									spriteFrame.getTexture(), 
+									spriteFrameRect.origin.x, 
+									spriteFrameRect.origin.y, 
+									spriteFrameRect.size.width, 
+									spriteFrameRect.size.height,
+									x * tileSize.width + spriteFrameOffset.x,
+									y * tileSize.height - bgBuffer.height + spriteFrameOffset.y,
+									spriteFrameRect.size.width,
+									spriteFrameRect.size.height)
+			()=>
+				for x in [0...width]
+					for y in [0...height]
+						spriteFramesConfigs = doodadsSpriteFrameFunction(x, y, tileMap)
+						for spriteFrameConfig in spriteFramesConfigs
+							spriteFrame = spriteFrameConfig.spriteFrame
+							spriteFrameOffset = spriteFrame.getOffset()						
+							spriteFrameConfig.x = x * tileSize.width + spriteFrameConfig.x + spriteFrameOffset.x + tileSize.width
+							spriteFrameConfig.z = y * tileSize.height + spriteFrameConfig.y
+							spriteFrameConfig.y = spriteFrameConfig.z - spriteFrameOffset.y - bgBuffer.height
+						doodadSpriteFrameConfigs = doodadSpriteFrameConfigs.concat(spriteFramesConfigs)
+			()=>
+				doodadSpriteFrameConfigs.sort((a,b)->
+					return a.z-b.z
+				)
+			()=>
+				for doodadSpriteFrameConfig in doodadSpriteFrameConfigs
+					doodadSpriteFrame = doodadSpriteFrameConfig.spriteFrame
+					doodadSpriteFrameRect = doodadSpriteFrame.getRect()	
+					ctx2.drawImage(
+						doodadSpriteFrame.getTexture(), 
+						doodadSpriteFrameRect.origin.x, 
+						doodadSpriteFrameRect.origin.y, 
+						doodadSpriteFrameRect.size.width, 
+						doodadSpriteFrameRect.size.height,
+						doodadSpriteFrameConfig.x,
+						doodadSpriteFrameConfig.y,
+						doodadSpriteFrameRect.size.width,
+						doodadSpriteFrameRect.size.height)
+			()=>
+				bgSprite = new cc.Sprite.createWithTexture(bgBuffer)
+				fgSprite = new cc.Sprite.createWithTexture(fgBuffer)
+				bgSprite.setAnchorPoint(new cc.Point(0, 1))
+				fgSprite.setAnchorPoint(new cc.Point(0, 1))
+				parentSprite.addChild(bgSprite, 0)
+				parentSprite.addChild(fgSprite, 1)
+
+				bgSprite = new cc.Sprite.createWithTexture(bgBuffer)
+				fgSprite = new cc.Sprite.createWithTexture(fgBuffer)
+				bgSprite.setAnchorPoint(new cc.Point(0, 1))
+				fgSprite.setAnchorPoint(new cc.Point(0, 1))
+				bgSprite.setPosition(new cc.Point(bgBuffer.width, 0))
+				fgSprite.setPosition(new cc.Point(fgBuffer.width, 0))
+				parentSprite.addChild(bgSprite, 0)
+				parentSprite.addChild(fgSprite, 1))
