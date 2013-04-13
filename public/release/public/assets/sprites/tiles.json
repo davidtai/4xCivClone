@@ -1,0 +1,227 @@
+{
+	"Id": "MapTiles",
+	"Source": "images/tiles.png",
+	"Statics":[
+		{
+			"Id": "Water1",
+			"Rect":{
+				"x": 0,
+				"y": 20,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "Grassland1",
+			"Rect":{
+				"x": 0,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "GrasslandTL1",
+			"Rect":{
+				"x": 20,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "GrasslandBL1",
+			"Rect":{
+				"x": 40,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "GrasslandBR1",
+			"Rect":{
+				"x": 60,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "GrasslandTR1",
+			"Rect":{
+				"x": 80,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "GrasslandT1",
+			"Rect":{
+				"x": 100,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "GrasslandL1",
+			"Rect":{
+				"x": 120,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "GrasslandB1",
+			"Rect":{
+				"x": 140,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "GrasslandR1",
+			"Rect":{
+				"x": 160,
+				"y": 0,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "Mountains",
+			"Rect":{
+				"x": 20,
+				"y": 20,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "Leeched1",
+			"Rect":{
+				"x": 0,
+				"y": 40,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "Prairie1",
+			"Rect":{
+				"x": 0,
+				"y": 60,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "Desert1",
+			"Rect":{
+				"x": 0,
+				"y": 80,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "Plains1",
+			"Rect":{
+				"x": 20,
+				"y": 40,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "Taiga1",
+			"Rect":{
+				"x": 20,
+				"y": 60,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		},
+		{
+			"Id": "Polar1",
+			"Rect":{
+				"x": 20,
+				"y": 80,
+				"w": 20,
+				"h": 20
+			},
+			"Hotspot":{
+				"x": 0,
+				"y": 0
+			}
+		}
+	]
+}

@@ -1,4 +1,4 @@
-if disabledSmoothing then scale = 1 else scale = config.screen.scale
+if config.disabledSmoothing then scale = 1 else scale = config.screen.scale
 
 split = location.search.replace('?', '').split('&').map((val)->
   return val.split('=')
@@ -9,7 +9,7 @@ if split[0] && split[0].length > 0 && split[0][0] == "seed"
 else 
   seed = new Date().getTime()
 
-$('body').append("<p>Seed: "+seed+"</p>")
+$("<p>Seed: "+seed+"</p>").appendTo('body')
 #seed = 1365818253446
 #seed = 1365327125203 
 #seed = 1365322763369
@@ -43,10 +43,6 @@ global = @
     sign = if x > 0 then 1 else -1
     sign * Math.pow(Math.abs(x), 1 / 3)
 
-animationCache = cc.AnimationCache.getInstance()   
-sharedSpriteFrameCache = cc.SpriteFrameCache.getInstance()
-sharedSpriteSheetCache = cc.SpriteSheetJson.getInstance()
-
 size = 128
 tileSize =  new cc.Size(40 * scale, 40 * scale)
 worldSize = new cc.Size(tileSize.width * size, tileSize.height * size)
@@ -60,7 +56,7 @@ worldSize = new cc.Size(tileSize.width * size, tileSize.height * size)
 
     @windowSize = cc.Director.getInstance().getWinSize()
     offset = cc.Node.create()
-    offset.setPosition(new cc.Point(0, config.screen.height * config.screen.scale if disabledSmoothing))#Math.floor((windowSize.width - config.screen.width)/2), Math.floor((windowSize.height - config.screen.height)/2))
+    offset.setPosition(new cc.Point(0, config.screen.height * config.screen.scale if config.disabledSmoothing))#Math.floor((windowSize.width - config.screen.width)/2), Math.floor((windowSize.height - config.screen.height)/2))
     # for converting into conventional windowing system
     offset.setScaleX(config.screen.scale)
     offset.setScaleY(-config.screen.scale)

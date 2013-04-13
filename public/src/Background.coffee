@@ -1,5 +1,3 @@
-textureCache = @cc.TextureCache.getInstance()
-
 makeBuffer = (width, height, insertAfterSelector)->
 	buffer = $('<canvas />')[0]
 	buffer.width = width

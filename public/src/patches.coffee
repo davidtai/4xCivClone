@@ -1,5 +1,3 @@
-global = @
-
 upscale = (img, zoom)->
   # Create an offscreen canvas, draw an image to it, and fetch the pixels
   refBuffer = document.createElement('canvas')
@@ -36,7 +34,7 @@ sharedSpriteFrameCache = @cc.SpriteFrameCache.getInstance()
 sharedAnimationCache = @cc.AnimationCache.getInstance()
 cacheSpriteFrame = (json, name, texture) ->
   rect = json.Rect
-  if global.disabledSmoothing then scale = 1 else scale = config.screen.scale
+  if config.disabledSmoothing then scale = 1 else scale = config.screen.scale
   frameRect = new cc.Rect(rect.x * scale, rect.y * scale, rect.w * scale, rect.h * scale)
   hotspot = json.Hotspot
   spriteFrame = cc.SpriteFrame.createWithTexture(texture, frameRect, false, new cc.Point(hotspot.x * scale, hotspot.y * scale), frameRect.size)
@@ -55,7 +53,7 @@ cacheAnimation = (json, texture) ->
 
 hasUpscaled = []
 cacheChildren = ->
-  if config.screen.scale == 1 || global.disabledSmoothing == true
+  if config.screen.scale == 1 || config.disabledSmoothing == true
     texture = sharedTextureCache.addImage(@Source)
   else if config.screen.scale != 1 
     if !hasUpscaled[@Source]

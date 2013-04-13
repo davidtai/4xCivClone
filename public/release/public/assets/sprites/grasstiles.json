@@ -1,0 +1,265 @@
+{
+    "Id": "GrasslandMapTiles",
+    "Source": "images/tiles3.png",
+    "Statics": [{
+            "Id": "Grassland1",
+            "Rect": {
+                "x": 0,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "Grassland2",
+            "Rect": {
+                "x": 40,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "Grassland3",
+            "Rect": {
+                "x": 0,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "Grassland4",
+            "Rect": {
+                "x": 40,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandTL1",
+            "Rect": {
+                "x": 80,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandBL1",
+            "Rect": {
+                "x": 80,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandBR1",
+            "Rect": {
+                "x": 120,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandTR1",
+            "Rect": {
+                "x": 120,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandT1",
+            "Rect": {
+                "x": 240,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 20
+            }
+        },
+        {
+            "Id": "GrasslandT2",
+            "Rect": {
+                "x": 280,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 20
+            }
+        },
+        {
+            "Id": "GrasslandL1",
+            "Rect": {
+                "x": 160,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 20,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandL2",
+            "Rect": {
+                "x": 160,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 20,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandB1",
+            "Rect": {
+                "x": 240,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": -20
+            }
+        },
+        {
+            "Id": "GrasslandB2",
+            "Rect": {
+                "x": 280,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": -20
+            }
+        },
+        {
+            "Id": "GrasslandR1",
+            "Rect": {
+                "x": 200,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": -20,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandR2",
+            "Rect": {
+                "x": 200,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": -20,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandHill1",
+            "Rect": {
+                "x": 320,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandHill2",
+            "Rect": {
+                "x": 360,
+                "y": 0,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandHill3",
+            "Rect": {
+                "x": 320,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        },
+        {
+            "Id": "GrasslandHill4",
+            "Rect": {
+                "x": 360,
+                "y": 40,
+                "w": 40,
+                "h": 40
+            },
+            "Hotspot": {
+                "x": 0,
+                "y": 0
+            }
+        }
+    ]
+}
