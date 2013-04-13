@@ -22,7 +22,7 @@
 
   this.Background = {
     create: function(options) {
-      var bgBuffer, bgSprite, binSize, chunkHeight, chunkWidth, chunkX, chunkY, ctx, ctxs, ctxsArray, doodadsSpriteFrameFunction, fgBuffer, fgSprite, height, modHeight, modWidth, parentSprite, spatialHash, spriteFrame, spriteFrameOffset, spriteFrameRect, spriteFrames, tileMap, tileMapSize, tileSize, tileSpriteFrameFunction, transitionSpriteFrameFunction, width, x, y, _i, _results;
+      var bgBuffer, bgSprite, binSize, chunkHeight, chunkWidth, chunkX, chunkY, ctx, ctxs, ctxsArray, doodadSpriteFrame, doodadSpriteFrameConfig, doodadSpriteFrameConfigs, doodadSpriteFrameOffset, doodadSpriteFrameRect, doodadsSpriteFrameFunction, fgBuffer, fgSprite, height, modHeight, modWidth, parentSprite, spatialHash, spriteFrame, spriteFrameOffset, spriteFrameRect, spriteFrames, tileMap, tileMapSize, tileSize, tileSpriteFrameFunction, transitionSpriteFrameFunction, width, x, y, _i, _j, _k, _l, _len, _len1, _m, _results;
       this.options = options;
       tileMap = this.options.tileMap;
       tileMapSize = this.options.tileMapSize;
@@ -36,87 +36,130 @@
       height = tileMapSize.height;
       this.buffer = makeBuffer(width * tileSize.width, height * tileSize.height, 'div');
       ctx = this.buffer.getContext('2d');
+      ctx.webkitImageSmoothingEnabled = false;
+      ctx.mozImageSmoothingEnabled = false;
+      ctx.imageSmoothingEnabled = false;
+      ctx.oImageSmoothingEnabled = false;
       ctx.translate(0, this.buffer.height);
-      binSize = spatialHash.binSize;
+      if (spatialHash != null) {
+        binSize = spatialHash.binSize;
+      } else {
+        binSize = new cc.Size(this.buffer.width, this.buffer.height);
+      }
       modWidth = Math.floor(binSize.width / tileSize.width);
       modHeight = Math.floor(binSize.height / tileSize.height);
       chunkWidth = modWidth * tileSize.width;
       chunkHeight = modHeight * tileSize.height;
       ctxsArray = [];
-      _results = [];
       for (y = _i = 0; 0 <= height ? _i < height : _i > height; y = 0 <= height ? ++_i : --_i) {
+        for (x = _j = 0; 0 <= width ? _j < width : _j > width; x = 0 <= width ? ++_j : --_j) {
+          chunkX = Math.floor(x / modWidth);
+          if (!ctxsArray[chunkX]) {
+            ctxsArray[chunkX] = [];
+          }
+          chunkY = Math.floor(y / modHeight);
+          ctxs = ctxsArray[chunkX][chunkY];
+          if (!ctxs) {
+            bgBuffer = makeBuffer(chunkWidth, chunkHeight);
+            fgBuffer = makeBuffer(chunkWidth + 2 * tileSize.width, chunkHeight);
+            bgSprite = new Tile({
+              buffer: bgBuffer,
+              spatialHash: spatialHash,
+              order: 0
+            });
+            fgSprite = new Tile({
+              buffer: fgBuffer,
+              spatialHash: spatialHash,
+              order: 0
+            });
+            bgSprite.setAnchorPoint(new cc.Point(0, 1));
+            fgSprite.setAnchorPoint(new cc.Point(0, 1));
+            bgSprite.setPosition(new cc.Point(chunkX * chunkWidth, chunkY * chunkHeight));
+            fgSprite.setPosition(new cc.Point(chunkX * chunkWidth - tileSize.width, chunkY * chunkHeight));
+            bgSprite.setScaleY(-1);
+            fgSprite.setScaleY(-1);
+            parentSprite.addChild(bgSprite, 0);
+            parentSprite.addChild(fgSprite, 2);
+            if (spatialHash != null) {
+              spatialHash.addNode(bgSprite);
+              spatialHash.addNode(fgSprite);
+            }
+            bgSprite = new Tile({
+              buffer: bgBuffer,
+              spatialHash: spatialHash
+            });
+            fgSprite = new Tile({
+              buffer: fgBuffer,
+              spatialHash: spatialHash
+            });
+            bgSprite.setAnchorPoint(new cc.Point(0, 1));
+            fgSprite.setAnchorPoint(new cc.Point(0, 1));
+            bgSprite.setPosition(new cc.Point(chunkX * chunkWidth + this.buffer.width, chunkY * chunkHeight));
+            fgSprite.setPosition(new cc.Point(chunkX * chunkWidth + this.buffer.width - tileSize.width, chunkY * chunkHeight));
+            bgSprite.setScaleY(-1);
+            fgSprite.setScaleY(-1);
+            parentSprite.addChild(bgSprite, 0);
+            parentSprite.addChild(fgSprite, 2);
+            if (spatialHash != null) {
+              spatialHash.addNode(bgSprite);
+              spatialHash.addNode(fgSprite);
+            }
+            ctxs = ctxsArray[chunkX][chunkY] = {
+              bg: bgBuffer.getContext('2d'),
+              fg: fgBuffer.getContext('2d')
+            };
+          }
+          spriteFrames = tileSpriteFrameFunction(x, y, tileMap);
+          for (_k = 0, _len = spriteFrames.length; _k < _len; _k++) {
+            spriteFrame = spriteFrames[_k];
+            if (spriteFrame != null) {
+              spriteFrameRect = spriteFrame.getRect();
+              spriteFrameOffset = spriteFrame.getOffset();
+              ctxs.bg.drawImage(spriteFrame.getTexture(), spriteFrameRect.origin.x, spriteFrameRect.origin.y, spriteFrameRect.size.width, spriteFrameRect.size.height, (x % modWidth) * tileSize.width - spriteFrameOffset.x, (y % modHeight) * tileSize.height - spriteFrameOffset.y, spriteFrameRect.size.width, spriteFrameRect.size.height);
+              ctx.drawImage(spriteFrame.getTexture(), spriteFrameRect.origin.x, spriteFrameRect.origin.y, spriteFrameRect.size.width, spriteFrameRect.size.height, x * tileSize.width - spriteFrameOffset.x, y * tileSize.height - this.buffer.height - spriteFrameOffset.y, spriteFrameRect.size.width, spriteFrameRect.size.height);
+            }
+          }
+          spriteFrames = transitionSpriteFrameFunction(x, y, tileMap);
+          for (_l = 0, _len1 = spriteFrames.length; _l < _len1; _l++) {
+            spriteFrame = spriteFrames[_l];
+            if (spriteFrame != null) {
+              spriteFrameRect = spriteFrame.getRect();
+              spriteFrameOffset = spriteFrame.getOffset();
+              ctxs.bg.drawImage(spriteFrame.getTexture(), spriteFrameRect.origin.x, spriteFrameRect.origin.y, spriteFrameRect.size.width, spriteFrameRect.size.height, (x % modWidth) * tileSize.width - spriteFrameOffset.x, (y % modHeight) * tileSize.height - spriteFrameOffset.y, spriteFrameRect.size.width, spriteFrameRect.size.height);
+              ctx.drawImage(spriteFrame.getTexture(), spriteFrameRect.origin.x, spriteFrameRect.origin.y, spriteFrameRect.size.width, spriteFrameRect.size.height, x * tileSize.width - spriteFrameOffset.x, y * tileSize.height - this.buffer.height - spriteFrameOffset.y, spriteFrameRect.size.width, spriteFrameRect.size.height);
+            }
+          }
+        }
+      }
+      _results = [];
+      for (y = _m = 0; 0 <= height ? _m < height : _m > height; y = 0 <= height ? ++_m : --_m) {
         _results.push((function() {
-          var _j, _results1;
+          var _len2, _n, _o, _results1;
           _results1 = [];
-          for (x = _j = 0; 0 <= width ? _j < width : _j > width; x = 0 <= width ? ++_j : --_j) {
-            chunkX = Math.floor(x / modWidth);
-            if (!ctxsArray[chunkX]) {
-              ctxsArray[chunkX] = [];
+          for (x = _n = 0; 0 <= width ? _n < width : _n > width; x = 0 <= width ? ++_n : --_n) {
+            doodadSpriteFrameConfigs = doodadsSpriteFrameFunction(x, y, tileMap);
+            for (_o = 0, _len2 = doodadSpriteFrameConfigs.length; _o < _len2; _o++) {
+              doodadSpriteFrameConfig = doodadSpriteFrameConfigs[_o];
+              doodadSpriteFrame = doodadSpriteFrameConfig.spriteFrame;
+              doodadSpriteFrameOffset = doodadSpriteFrame.getOffset();
+              doodadSpriteFrameConfig.x = doodadSpriteFrameConfig.x - doodadSpriteFrameOffset.x + tileSize.width;
+              if (!(doodadSpriteFrameConfig.z != null)) {
+                doodadSpriteFrameConfig.z = doodadSpriteFrameConfig.y;
+              }
+              doodadSpriteFrameConfig.y = doodadSpriteFrameConfig.z - doodadSpriteFrameOffset.y;
             }
-            chunkY = Math.floor(y / modHeight);
-            ctxs = ctxsArray[chunkX][chunkY];
-            if (!ctxs) {
-              bgBuffer = makeBuffer(chunkWidth, chunkHeight);
-              fgBuffer = makeBuffer(chunkWidth + 2 * tileSize.width, chunkHeight);
-              bgSprite = new Tile({
-                buffer: bgBuffer,
-                spatialHash: spatialHash,
-                order: 0
-              });
-              fgSprite = new Tile({
-                buffer: fgBuffer,
-                spatialHash: spatialHash,
-                order: 0
-              });
-              bgSprite.setAnchorPoint(new cc.Point(0, 1));
-              fgSprite.setAnchorPoint(new cc.Point(0, 1));
-              bgSprite.setPosition(new cc.Point(chunkX * chunkWidth, chunkY * chunkHeight));
-              fgSprite.setPosition(new cc.Point(chunkX * chunkWidth, chunkY * chunkHeight));
-              bgSprite.setScaleY(-1);
-              fgSprite.setScaleY(-1);
-              parentSprite.addChild(bgSprite, 0);
-              parentSprite.addChild(fgSprite, 1);
-              spatialHash.addNode(bgSprite);
-              spatialHash.addNode(fgSprite);
-              bgSprite = new Tile({
-                buffer: bgBuffer,
-                spatialHash: spatialHash,
-                order: 0
-              });
-              fgSprite = new Tile({
-                buffer: fgBuffer,
-                spatialHash: spatialHash,
-                order: 0
-              });
-              bgSprite.setAnchorPoint(new cc.Point(0, 1));
-              fgSprite.setAnchorPoint(new cc.Point(0, 1));
-              bgSprite.setPosition(new cc.Point(chunkX * chunkWidth + this.buffer.width, chunkY * chunkHeight));
-              fgSprite.setPosition(new cc.Point(chunkX * chunkWidth + this.buffer.width, chunkY * chunkHeight));
-              bgSprite.setScaleY(-1);
-              fgSprite.setScaleY(-1);
-              parentSprite.addChild(bgSprite, 0);
-              parentSprite.addChild(fgSprite, 1);
-              spatialHash.addNode(bgSprite);
-              spatialHash.addNode(fgSprite);
-              ctxs = ctxsArray[chunkX][chunkY] = {
-                bg: bgBuffer.getContext('2d'),
-                fg: fgBuffer.getContext('2d')
-              };
-            }
-            spriteFrames = tileSpriteFrameFunction(x, y, tileMap);
+            doodadSpriteFrameConfigs.sort(function(a, b) {
+              return a.z - b.z;
+            });
             _results1.push((function() {
-              var _k, _len, _results2;
+              var _len3, _p, _results2;
               _results2 = [];
-              for (_k = 0, _len = spriteFrames.length; _k < _len; _k++) {
-                spriteFrame = spriteFrames[_k];
-                if (spriteFrame != null) {
-                  spriteFrameRect = spriteFrame.getRect();
-                  spriteFrameOffset = spriteFrame.getOffset();
-                  ctxs.bg.drawImage(spriteFrame.getTexture(), spriteFrameRect.origin.x, spriteFrameRect.origin.y, spriteFrameRect.size.width, spriteFrameRect.size.height, (x % modWidth) * tileSize.width + spriteFrameOffset.x, (y % modHeight) * tileSize.height + spriteFrameOffset.y, spriteFrameRect.size.width, spriteFrameRect.size.height);
-                  _results2.push(ctx.drawImage(spriteFrame.getTexture(), spriteFrameRect.origin.x, spriteFrameRect.origin.y, spriteFrameRect.size.width, spriteFrameRect.size.height, x * tileSize.width + spriteFrameOffset.x, y * tileSize.height - this.buffer.height + spriteFrameOffset.y, spriteFrameRect.size.width, spriteFrameRect.size.height));
-                } else {
-                  _results2.push(void 0);
-                }
+              for (_p = 0, _len3 = doodadSpriteFrameConfigs.length; _p < _len3; _p++) {
+                doodadSpriteFrameConfig = doodadSpriteFrameConfigs[_p];
+                doodadSpriteFrame = doodadSpriteFrameConfig.spriteFrame;
+                doodadSpriteFrameRect = doodadSpriteFrame.getRect();
+                ctxs.fg.drawImage(doodadSpriteFrame.getTexture(), doodadSpriteFrameRect.origin.x, doodadSpriteFrameRect.origin.y, doodadSpriteFrameRect.size.width, doodadSpriteFrameRect.size.height, (x % modWidth) * tileSize.width + doodadSpriteFrameConfig.x, (y % modHeight) * tileSize.height + doodadSpriteFrameConfig.y, doodadSpriteFrameRect.size.width, doodadSpriteFrameRect.size.height);
+                _results2.push(ctx.drawImage(doodadSpriteFrame.getTexture(), doodadSpriteFrameRect.origin.x, doodadSpriteFrameRect.origin.y, doodadSpriteFrameRect.size.width, doodadSpriteFrameRect.size.height, x * tileSize.width + doodadSpriteFrameConfig.x - tileSize.width, y * tileSize.height - this.buffer.height + doodadSpriteFrameConfig.y, doodadSpriteFrameRect.size.width, doodadSpriteFrameRect.size.height));
               }
               return _results2;
             }).call(this));

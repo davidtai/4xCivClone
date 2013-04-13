@@ -115,8 +115,8 @@
       this.activeBins.length = 0;
       x1 = Math.max(Math.floor((boundingRect.origin.x - this.border) / this.binSize.width), 0);
       y1 = Math.max(Math.floor((boundingRect.origin.y - this.border) / this.binSize.height), 0);
-      x2 = Math.min(Math.ceil((boundingRect.size.width + 2 * this.border) / this.binSize.width) + x1, this.gridSize.width);
-      y2 = Math.min(Math.ceil((boundingRect.size.height + 2 * this.border) / this.binSize.height) + y1, this.gridSize.height);
+      x2 = Math.min(Math.ceil((boundingRect.size.width + boundingRect.origin.x + this.border) / this.binSize.width), this.gridSize.width);
+      y2 = Math.min(Math.ceil((boundingRect.size.height + boundingRect.origin.y + this.border) / this.binSize.height), this.gridSize.height);
       for (x = _j = x1; x1 <= x2 ? _j < x2 : _j > x2; x = x1 <= x2 ? ++_j : --_j) {
         for (y = _k = y1; y1 <= y2 ? _k < y2 : _k > y2; y = y1 <= y2 ? ++_k : --_k) {
           bin = this.getBinInGrid(x, y);

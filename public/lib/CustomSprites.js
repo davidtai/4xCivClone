@@ -19,14 +19,18 @@
     Tile.prototype.ctor = function(options) {
       this.options = options;
       this.spatialHash = options.spatialHash;
-      this.spatialHash.addNode(this);
+      if (this.spatialHash != null) {
+        this.spatialHash.addNode(this);
+      }
       return this.initWithTexture(this.options.buffer);
     };
 
     Tile.prototype.update = function(dt) {
       var bin;
-      bin = this.spatialHash.getBinFromNode(this);
-      return this.setVisible((bin != null) && bin.active);
+      if (this.spatialHash != null) {
+        bin = this.spatialHash.getBinFromNode(this);
+        return this.setVisible((bin != null) && bin.active);
+      }
     };
 
     return Tile;

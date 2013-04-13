@@ -1,10 +1,17 @@
+global = @
+
 upscale = (img, zoom)->
   # Create an offscreen canvas, draw an image to it, and fetch the pixels
-  ref = document.createElement('canvas').getContext('2d')
+  refBuffer = document.createElement('canvas')
+  refBuffer.width = img.width
+  refBuffer.height = img.height
+  ref = refBuffer.getContext('2d')
+  
   buffer = document.createElement('canvas')
   buffer.width = img.width * zoom
   buffer.height = img.height * zoom
   bufferCtx = buffer.getContext('2d')
+
   ref.drawImage(img, 0, 0)
   imgData = ref.getImageData(0, 0, img.width, img.height).data
 
@@ -29,9 +36,10 @@ sharedSpriteFrameCache = @cc.SpriteFrameCache.getInstance()
 sharedAnimationCache = @cc.AnimationCache.getInstance()
 cacheSpriteFrame = (json, name, texture) ->
   rect = json.Rect
-  frameRect = new cc.Rect(rect.x * config.screen.scale, rect.y * config.screen.scale, rect.w * config.screen.scale, rect.h * config.screen.scale)
+  if global.disabledSmoothing then scale = 1 else scale = config.screen.scale
+  frameRect = new cc.Rect(rect.x * scale, rect.y * scale, rect.w * scale, rect.h * scale)
   hotspot = json.Hotspot
-  spriteFrame = cc.SpriteFrame.createWithTexture(texture, frameRect, false, new cc.Point(hotspot.x * config.screen.scale, hotspot.y * config.screen.scale), frameRect.size)
+  spriteFrame = cc.SpriteFrame.createWithTexture(texture, frameRect, false, new cc.Point(hotspot.x * scale, hotspot.y * scale), frameRect.size)
   sharedSpriteFrameCache.addSpriteFrame spriteFrame, name
   spriteFrame
 
@@ -45,11 +53,18 @@ cacheAnimation = (json, texture) ->
     animation.initWithSpriteFrames spriteFrames, (if json.Rate? then json.Rate else 1)
     sharedAnimationCache.addAnimation animation, json.Id
 
+hasUpscaled = []
 cacheChildren = ->
-  texture = sharedTextureCache.addImage(@Source)
-  if config.screen.scale != 1
-    texture = upscale(texture, config.screen.scale)
-    sharedTextureCache.cacheImage(@Source, texture)
+  if config.screen.scale == 1 || global.disabledSmoothing == true
+    texture = sharedTextureCache.addImage(@Source)
+  else if config.screen.scale != 1 
+    if !hasUpscaled[@Source]
+      texture = sharedTextureCache.addImage(@Source)
+      texture = upscale(texture, config.screen.scale)
+      hasUpscaled[@Source] = true
+      sharedTextureCache.cacheImage(@Source+"Upscaled", texture)
+    else
+      texture = sharedTextureCache.addImage(@Source+"Upscaled")
   if @Animations
     animations = @Animations.map((json) ->
       cacheAnimation json, texture

@@ -1,22 +1,27 @@
 var canvas = $('#gameCanvas')[0];
+var disabledSmoothing = false;
 
 if(canvas) {
-context = canvas.getContext('2d'); 
-context.imageSmoothingEnabled = true;
-context.mozImageSmoothingEnabled = true;
-context.oImageSmoothingEnabled = true;
-context.webkitImageSmoothingEnabled = true;
+    context = canvas.getContext('2d'); 
+    if(context.imageSmoothingEnabled ||
+        context.mozImageSmoothingEnabled ||
+        context.oImageSmoothingEnabled ||
+        context.webkitImageSmoothingEnabled)
+    {
+        disabledSmoothing = true;
+    }
 }
 
 //Configuration
 var config = {
     screen: {
-        width: 1024,
-        height: 768,
-        scale: 1
+        width: 512,
+        height: 384,
+        scale: 2
     },
     assetsFolder: "assets/",
     libFiles: [
+        //'vendor/polyfill/polyfill.js',
         'vendor/random/MersenneTwister.js',
         'lib/patches.js',
         'lib/World.js',
@@ -24,12 +29,16 @@ var config = {
         'lib/SpatialHash.js',
         'lib/Background.js',
         'lib/CustomSprites.js',
+        'lib/Overlay.js',
         'lib/Engine.js'
     ]
 };
 
-config.screen.width = config.screen.width * config.screen.scale;
-config.screen.height = config.screen.height * config.screen.scale;
+if(!disabledSmoothing) {
+    config.screen.width = config.screen.width * config.screen.scale;
+    config.screen.height = config.screen.height * config.screen.scale;
+}
+
 config.screen.centerX = config.screen.width/2;
 config.screen.centerY = config.screen.height/2;
 config.screen.cameraOffset = config.screen.centerX*0.6;

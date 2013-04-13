@@ -281,6 +281,11 @@ class GeographicTile
 			landPlateIds: length: 0
 			subduction: false,
 			tileGraphic: null
+
+			# saved graphics list
+			tiles: null
+			transitions: null
+			doodads: null
 		options)
 
 class TileGraphic
@@ -295,6 +300,7 @@ class TileGraphic
 			spriteFrames3: []
 			spriteFrames6: []
 			spriteFrames9: []
+			hills:[]
 		@options)
 
 loadTiles = (name) ->
@@ -312,10 +318,21 @@ loadTiles = (name) ->
 		spriteFrames3: [sharedSpriteFrameCache.getSpriteFrame(name + "BR1")]
 		spriteFrames6: [sharedSpriteFrameCache.getSpriteFrame(name + "R1"), sharedSpriteFrameCache.getSpriteFrame(name + "R2")]
 		spriteFrames9: [sharedSpriteFrameCache.getSpriteFrame(name + "TR1")]
+		hills: [
+			sharedSpriteFrameCache.getSpriteFrame(name + "Hill1"), 
+			sharedSpriteFrameCache.getSpriteFrame(name + "Hill2"), 
+			sharedSpriteFrameCache.getSpriteFrame(name + "Hill3"), 
+			sharedSpriteFrameCache.getSpriteFrame(name + "Hill4")]
 	}
 
-randomTile = (tiles) ->
+randomArrayElement = (tiles) ->
 	return tiles[Math.floor(tiles.length * Math.random())]
+
+randomOffset = (spriteFrame, tileSize) ->
+	rect = spriteFrame.getRect()
+	# For Testing Offsets
+	#return new cc.Point(0, 0)
+	return new cc.Point(Math.floor(Math.random()*(tileSize.width-rect.size.width/3)+rect.size.width/6), Math.floor(Math.random()*(tileSize.height-rect.size.height/3)+rect.size.height/6))
 
 class @World
 	constructor: (@options)->
@@ -373,20 +390,23 @@ class @World
 		tilePriority = [
 			PrairieTiles
 			GrassTiles
-			PlainTiles
 			TaigaTiles
+			DesertTiles
+			PlainTiles
 			LeechedTiles
 			PolarTiles
-			DesertTiles
 			WaterTiles
 		].reverse()
 
 		grassTuft = sharedSpriteFrameCache.getSpriteFrame("GrassTuft1")
+		dryGrassTuft = sharedSpriteFrameCache.getSpriteFrame("GrassTuft2")
 		leafyTree = sharedSpriteFrameCache.getSpriteFrame("Tree1")
 		pineyTree = sharedSpriteFrameCache.getSpriteFrame("Tree2")
 		junglyTree = sharedSpriteFrameCache.getSpriteFrame("Tree3")
 		mountain = sharedSpriteFrameCache.getSpriteFrame("Mountain1")
-		hill = sharedSpriteFrameCache.getSpriteFrame("Hill1")
+		coldMountain = sharedSpriteFrameCache.getSpriteFrame("Mountain2")
+		icyMountain = sharedSpriteFrameCache.getSpriteFrame("Mountain3")
+		hut = sharedSpriteFrameCache.getSpriteFrame("Hut1")
 
 		windSW = sharedSpriteFrameCache.getSpriteFrame("SW")
 		windSE = sharedSpriteFrameCache.getSpriteFrame("SE")
@@ -416,7 +436,7 @@ class @World
 					else
 						temperature = "Freezing"
 						
-					if geographicTile.rainfall > 70
+					if geographicTile.rainfall > 80
 						rainfall = "Wet"
 					else if geographicTile.rainfall > 30
 						rainfall = "Moist"
@@ -469,12 +489,13 @@ class @World
 					else
 						geographicTile.tileGraphic = tilePriority[priority]
 
-		addTransitions = (x, y, tileMap)=>
-
 		tileSpriteFrameFunction = (x, y, tileMap)=>
 			geographicTile = @geographicTileMap[x][y]
+			if geographicTile.tiles
+				return geographicTile.tiles
+
 			tileGraphic = geographicTile.tileGraphic
-			ret = [randomTile(tileGraphic.spriteFrames5)]
+			geographicTile.tiles = ret = [randomArrayElement(tileGraphic.spriteFrames5)]
 
 			if false
 				if geographicTile.windDirection == 1
@@ -507,47 +528,49 @@ class @World
 				if geographicTileT
 					if geographicTileT.elevation > 0 
 						ret = ret.concat(
-							randomTile(tileGraphic.spriteFrames7),
-							randomTile(tileGraphic.spriteFrames9),
-							randomTile(tileGraphic.spriteFrames8),
+							randomArrayElement(tileGraphic.spriteFrames7),
+							randomArrayElement(tileGraphic.spriteFrames9),
+							randomArrayElement(tileGraphic.spriteFrames8),
 							)
 					else 
 						if @geographicTileMap[l][t].elevation > 0 
-							ret.push(randomTile(tileGraphic.spriteFrames7))
+							ret.push(randomArrayElement(tileGraphic.spriteFrames7))
 						if @geographicTileMap[r][t].elevation > 0 
-							ret.push(randomTile(tileGraphic.spriteFrames9))
+							ret.push(randomArrayElement(tileGraphic.spriteFrames9))
 				#Below
 				geographicTileB = @geographicTileMap[x][b]
 				if geographicTileB
 					if geographicTileB.elevation > 0 
 						ret = ret.concat(
-							randomTile(tileGraphic.spriteFrames1),
-							randomTile(tileGraphic.spriteFrames3),
-							randomTile(tileGraphic.spriteFrames2),
+							randomArrayElement(tileGraphic.spriteFrames1),
+							randomArrayElement(tileGraphic.spriteFrames3),
+							randomArrayElement(tileGraphic.spriteFrames2),
 							)
 					else 
 						if @geographicTileMap[l][b].elevation > 0 
-							ret.push(randomTile(tileGraphic.spriteFrames1))
+							ret.push(randomArrayElement(tileGraphic.spriteFrames1))
 						if @geographicTileMap[r][b].elevation > 0 
-							ret.push(randomTile(tileGraphic.spriteFrames3))
+							ret.push(randomArrayElement(tileGraphic.spriteFrames3))
 				#Left
 				if @geographicTileMap[l][y].elevation > 0
 					ret = ret.concat(
-						randomTile(tileGraphic.spriteFrames7),
-						randomTile(tileGraphic.spriteFrames1),
-						randomTile(tileGraphic.spriteFrames4))
+						randomArrayElement(tileGraphic.spriteFrames7),
+						randomArrayElement(tileGraphic.spriteFrames1),
+						randomArrayElement(tileGraphic.spriteFrames4))
 				#Right
 				if @geographicTileMap[r][y].elevation > 0
 					ret = ret.concat(
-						randomTile(tileGraphic.spriteFrames9),
-						randomTile(tileGraphic.spriteFrames3),
-						randomTile(tileGraphic.spriteFrames6))
+						randomArrayElement(tileGraphic.spriteFrames9),
+						randomArrayElement(tileGraphic.spriteFrames3),
+						randomArrayElement(tileGraphic.spriteFrames6))
 			return ret
 
 		transitionSpriteFrameFunction = (x, y, tileMap)=>
 			geographicTile = @geographicTileMap[x][y]
+			if geographicTile.transitions
+				return geographicTile.transitions
 			tileGraphic = geographicTile.tileGraphic
-			ret = []
+			geographicTile.transitions = ret = []
 
 			l = (x-1 + @tileMapSize.width) % @tileMapSize.width
 			r = (x+1) % @tileMapSize.width
@@ -574,21 +597,21 @@ class @World
 				if adjacentTileGraphic7 && tilePriority.indexOf(adjacentTileGraphic7) > priority
 					has7 = true
 					if adjacentTileGraphic8 && tilePriority.indexOf(adjacentTileGraphic8) > tilePriority.indexOf(adjacentTileGraphic7)
-						ret.push(randomTile(adjacentTileGraphic8.spriteFrames7))
+						ret.push(randomArrayElement(adjacentTileGraphic8.spriteFrames7))
 					else 
-						ret.push(randomTile(adjacentTileGraphic7.spriteFrames7))
+						ret.push(randomArrayElement(adjacentTileGraphic7.spriteFrames7))
 				if adjacentTileGraphic9 && tilePriority.indexOf(adjacentTileGraphic9) > priority
 					has9 = true
 					if adjacentTileGraphic8 && tilePriority.indexOf(adjacentTileGraphic8) > tilePriority.indexOf(adjacentTileGraphic9)
-						ret.push(randomTile(adjacentTileGraphic8.spriteFrames9))
+						ret.push(randomArrayElement(adjacentTileGraphic8.spriteFrames9))
 					else 
-						ret.push(randomTile(adjacentTileGraphic9.spriteFrames9))
+						ret.push(randomArrayElement(adjacentTileGraphic9.spriteFrames9))
 				if adjacentTileGraphic8 && tilePriority.indexOf(adjacentTileGraphic8) > priority
 					if !has7
-						ret.push(randomTile(adjacentTileGraphic8.spriteFrames7))
+						ret.push(randomArrayElement(adjacentTileGraphic8.spriteFrames7))
 					if !has9
-						ret.push(randomTile(adjacentTileGraphic8.spriteFrames9))
-					ret.push(randomTile(adjacentTileGraphic8.spriteFrames8))
+						ret.push(randomArrayElement(adjacentTileGraphic8.spriteFrames9))
+					ret.push(randomArrayElement(adjacentTileGraphic8.spriteFrames8))
 			#Below
 			has1 = false
 			has3 = false
@@ -599,74 +622,79 @@ class @World
 				if adjacentTileGraphic1 && tilePriority.indexOf(adjacentTileGraphic1) > priority
 					has1 = true
 					if adjacentTileGraphic2 && tilePriority.indexOf(adjacentTileGraphic2) > tilePriority.indexOf(adjacentTileGraphic1)
-						ret.push(randomTile(adjacentTileGraphic2.spriteFrames1))
+						ret.push(randomArrayElement(adjacentTileGraphic2.spriteFrames1))
 					else 
-						ret.push(randomTile(adjacentTileGraphic1.spriteFrames1))
+						ret.push(randomArrayElement(adjacentTileGraphic1.spriteFrames1))
 				if adjacentTileGraphic3 && tilePriority.indexOf(adjacentTileGraphic3) > priority
 					has3 = true
 					if adjacentTileGraphic2 && tilePriority.indexOf(adjacentTileGraphic2) > tilePriority.indexOf(adjacentTileGraphic3)
-						ret.push(randomTile(adjacentTileGraphic2.spriteFrames3))
+						ret.push(randomArrayElement(adjacentTileGraphic2.spriteFrames3))
 					else 
-						ret.push(randomTile(adjacentTileGraphic3.spriteFrames3))
+						ret.push(randomArrayElement(adjacentTileGraphic3.spriteFrames3))
 				if adjacentTileGraphic2 && tilePriority.indexOf(adjacentTileGraphic2) > priority
 					if !has1
-						ret.push(randomTile(adjacentTileGraphic2.spriteFrames1))
+						ret.push(randomArrayElement(adjacentTileGraphic2.spriteFrames1))
 					if !has3
-						ret.push(randomTile(adjacentTileGraphic2.spriteFrames3))
-					ret.push(randomTile(adjacentTileGraphic2.spriteFrames2))
+						ret.push(randomArrayElement(adjacentTileGraphic2.spriteFrames3))
+					ret.push(randomArrayElement(adjacentTileGraphic2.spriteFrames2))
 			#Left
 			if adjacentTile4
 				adjacentTileGraphic4 = adjacentTile4.tileGraphic if adjacentTile4.elevation > 0
 				if adjacentTileGraphic4 && blah = tilePriority.indexOf(adjacentTileGraphic4) > priority
 					if !has7
-						ret.push(randomTile(adjacentTileGraphic4.spriteFrames7))
+						ret.push(randomArrayElement(adjacentTileGraphic4.spriteFrames7))
 					if !has1
-						ret.push(randomTile(adjacentTileGraphic4.spriteFrames1))
-					ret.push(randomTile(adjacentTileGraphic4.spriteFrames4))
+						ret.push(randomArrayElement(adjacentTileGraphic4.spriteFrames1))
+					ret.push(randomArrayElement(adjacentTileGraphic4.spriteFrames4))
 			#Right
 			if adjacentTile6
 				adjacentTileGraphic6 = adjacentTile6.tileGraphic if adjacentTile6.elevation > 0
 				if adjacentTileGraphic6 && blah = tilePriority.indexOf(adjacentTileGraphic6) > priority
 					if !has9
-						ret.push(randomTile(adjacentTileGraphic6.spriteFrames9))
+						ret.push(randomArrayElement(adjacentTileGraphic6.spriteFrames9))
 					if !has3
-						ret.push(randomTile(adjacentTileGraphic6.spriteFrames3))
-					ret.push(randomTile(adjacentTileGraphic6.spriteFrames6))
+						ret.push(randomArrayElement(adjacentTileGraphic6.spriteFrames3))
+					ret.push(randomArrayElement(adjacentTileGraphic6.spriteFrames6))
+
+			if geographicTile.elevation > 2 && geographicTile.elevation <= 4
+				ret.push(randomArrayElement(tileGraphic.hills))
 			return ret
 
 		doodadsSpriteFrameFunction = (x, y, tileMap)=>
-			ret = []
-			
 			geographicTile = @geographicTileMap[x][y]
+			if geographicTile.doodads
+				return geographicTile.doodads
+
+			geographicTile.doodads = ret = []
 			
 			if geographicTile.temperature > 90
 				temperature = "Hot"
-				treeCount = 6
-				grassCount = 4
-			else if geographicTile.temperature > 50
-				temperature = "Temperate"
 				treeCount = 4
 				grassCount = 3
+			else if geographicTile.temperature > 50
+				temperature = "Temperate"
+				treeCount = 3
+				grassCount = 1
 			else if geographicTile.temperature > 20
 				temperature = "Cold"
-				treeCount = 2
-				grassCount = 2
+				treeCount = 4
+				grassCount = 1
 			else
 				temperature = "Freezing"
 				treeCount = 0
 				grassCount = 0
 
-			if geographicTile.rainfall > 70
+			if geographicTile.rainfall > 80
 				rainfall = "Wet"
-				treeCount *= 2
-				grassCount = 0
+				treeCount *= 1.5
+				grassCount *= 2
 			else if geographicTile.rainfall > 30
 				rainfall = "Moist"
-				grassCount *= 2
-				if temperature == "Hot" 
-					treeCount = 0
+				grassCount *= 1.5
+				treeCount = 0
 			else
 				rainfall = "Dry"
+				treeCount = 0
 
 			if temperature == "Temperate" 
 				tree = leafyTree 
@@ -679,40 +707,68 @@ class @World
 				if geographicTile.elevation <= 2
 					if rainfall == "Wet" || rainfall == "Moist"
 						for i in [0...grassCount]
-							x = Math.floor(Math.random() * @tileSize.width/4*3) - @tileSize.width/8*3
-							y = -Math.floor(Math.random() * @tileSize.height/4*3) + @tileSize.width/8*3
+							offset = randomOffset(grassTuft, @tileSize)
 							ret.push(
 								spriteFrame: grassTuft
-								x: x
-								y: y
-								)
+								x: offset.x
+								y: offset.y)
 					if rainfall == "Wet" || rainfall == "Moist"
 						for i in [0...treeCount]
-							x = Math.floor(Math.random() * @tileSize.width/4*3) - @tileSize.width/8*3
-							y = -Math.floor(Math.random() * @tileSize.height/4*3) + @tileSize.width/8*3
+							offset = randomOffset(tree, @tileSize)
 							ret.push(
 								spriteFrame: tree
-								x: x
-								y: y
-								)
+								x: offset.x
+								y: offset.y)
+					if rainfall == "Moist" && temperature == "Temperate"
+						ret.push(
+							spriteFrame: hut
+							x: @tileSize.width/2
+							y: Math.floor(@tileSize.height/2))
+					if rainfall == "Dry" && temperature == "Temperate"
+						for i in [0...grassCount]
+							offset = randomOffset(dryGrassTuft, @tileSize)
+							ret.push(
+								spriteFrame: dryGrassTuft
+								x: offset.x
+								y: offset.y)
 				else if geographicTile.elevation <= 4
-					for i in [0...1]
-						x = Math.floor(Math.random() * @tileSize.width/4) - @tileSize.width/8
-						y = -Math.floor(Math.random() * @tileSize.height/4) + @tileSize.width/8
-						ret.push(
-							spriteFrame: hill
-							x: x
-							y: y
-							)
+					if rainfall == "Wet" || rainfall == "Moist" 
+						for i in [0...grassCount]
+							offset = randomOffset(grassTuft, @tileSize)
+							ret.push(
+								spriteFrame: grassTuft
+								x: offset.x
+								y: Math.floor(offset.y - @tileSize.height/8))
+						for i in [0...treeCount]
+							offset = randomOffset(tree, @tileSize)
+							ret.push(
+								spriteFrame: tree
+								x: offset.x
+								y: Math.floor(offset.y - @tileSize.height/8))
+				#	for i in [0...1]
+				#		offset = randomOffset(hill, @tileSize)
+				#		ret.push(
+				#			spriteFrame: hill
+				#			x: offset.x
+				#			y: offset.y)
 				else 
-					for i in [0...4]
-						x = Math.floor(Math.random() * @tileSize.width/4*3) - @tileSize.width/8*3
-						y = -Math.floor(Math.random() * @tileSize.height/4*3) + @tileSize.width/8*3
-						ret.push(
-							spriteFrame: mountain
-							x: x
-							y: y
-							)
+					offset = randomOffset(mountain, @tileSize)
+					if geographicTile.tileGraphic == PolarTiles
+						mt = icyMountain
+					else if geographicTile.tileGraphic == TaigaTiles || geographicTile.tileGraphic == GrassTiles
+						mt = coldMountain
+					else
+						mt = mountain
+					ret.push(
+						spriteFrame: mt
+						x: offset.x
+						y: Math.floor(offset.y/2+@tileSize.height/3))
+					offset = randomOffset(mountain, @tileSize)
+					ret.push(
+						spriteFrame: mt
+						x: offset.x
+						y: Math.floor(offset.y/2+@tileSize.height/4*3))
+			throw new Error("WHAT") if ret[0] && !ret[0].spriteFrame
 			return ret
 
 		Background.create(

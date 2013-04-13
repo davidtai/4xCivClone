@@ -67,8 +67,8 @@ spatialId = 0
 			
 		x1 = Math.max(Math.floor((boundingRect.origin.x - @border) / @binSize.width), 0)
 		y1 = Math.max(Math.floor((boundingRect.origin.y - @border) / @binSize.height), 0)
-		x2 = Math.min(Math.ceil((boundingRect.size.width + 2*@border) / @binSize.width) + x1, @gridSize.width)
-		y2 = Math.min(Math.ceil((boundingRect.size.height + 2*@border)  / @binSize.height) + y1, @gridSize.height)
+		x2 = Math.min(Math.ceil((boundingRect.size.width + boundingRect.origin.x + @border) / @binSize.width), @gridSize.width)
+		y2 = Math.min(Math.ceil((boundingRect.size.height + boundingRect.origin.y + @border)  / @binSize.height), @gridSize.height)
 
 		for x in [x1...x2]
 			for y in [y1...y2]
