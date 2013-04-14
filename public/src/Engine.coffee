@@ -101,9 +101,9 @@ worldSize = new cc.Size(tileSize.width * size, tileSize.height * size)
         @setTouchEnabled true
         @setKeyboardEnabled true
 
-        lazyLayer = new cc.LazyLayer();
-        lazyLayer.addChild(cc.LayerColor.create(new cc.Color4B(0, 0, 0, 255), @windowSize.width, @windowSize.height))
-        @addChild lazyLayer
+        #lazyLayer = new cc.LazyLayer();
+        #lazyLayer.addChild(cc.LayerColor.create(new cc.Color4B(0, 0, 0, 255), @windowSize.width, @windowSize.height))
+        #@addChild lazyLayer
         
         @ready = true
       )

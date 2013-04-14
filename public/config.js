@@ -21,7 +21,7 @@
 
   // TODO collapse all into config
   var canvas = $('#gameCanvas')[0];
-  config.disabledSmoothing = false;
+  config.disabledSmoothing = true; //hard coded since we basically don't want to scale.
 
   if(canvas) {
       context = canvas.getContext('2d'); 

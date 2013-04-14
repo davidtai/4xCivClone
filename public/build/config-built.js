@@ -1,32 +1,33 @@
 (function(global){
+  var canvas = $('#gameCanvas')[0];
+  var scale = 2;
+
   //Configuration
   global.config = {
-      screen: {
-          width: 512,
-          height: 384,
-          scale: 2
-      },
-      assetsFolder: "assets/"
+    screen: {
+      width: canvas.width / scale,
+      height: canvas.height / scale,
+      scale: scale
+    },
+    assetsFolder: "assets/"
   };
 
-  // TODO collapse all into config
-  var canvas = $('#gameCanvas')[0];
   config.disabledSmoothing = false;
 
   if(canvas) {
-      context = canvas.getContext('2d'); 
-      if(context.imageSmoothingEnabled ||
-          context.mozImageSmoothingEnabled ||
-          context.oImageSmoothingEnabled ||
-          context.webkitImageSmoothingEnabled)
-      {
-          config.disabledSmoothing = true;
-      }
+   context = canvas.getContext('2d'); 
+    if(context.imageSmoothingEnabled ||
+      context.mozImageSmoothingEnabled ||
+      context.oImageSmoothingEnabled ||
+      context.webkitImageSmoothingEnabled)
+    {
+      config.disabledSmoothing = true;
+    }
   }
 
   if(!config.disabledSmoothing) {
-      config.screen.width = config.screen.width * config.screen.scale;
-      config.screen.height = config.screen.height * config.screen.scale;
+    config.screen.width = config.screen.width * config.screen.scale;
+    config.screen.height = config.screen.height * config.screen.scale;
   }
 
   config.screen.centerX = config.screen.width/2;
@@ -35,14 +36,14 @@
 
   //Preloads
   global.resources = {
-      tiles:          {type:"sprite-json", src:config.assetsFolder+"sprites/tiles3.json"},
-      grasstiles:     {type:"sprite-json", src:config.assetsFolder+"sprites/grasstiles.json"},
-      leechedtiles:   {type:"sprite-json", src:config.assetsFolder+"sprites/leechedtiles.json"},
-      prairietiles:   {type:"sprite-json", src:config.assetsFolder+"sprites/prairietiles.json"},
-      deserttiles:    {type:"sprite-json", src:config.assetsFolder+"sprites/deserttiles.json"},
-      plaintiles:     {type:"sprite-json", src:config.assetsFolder+"sprites/plaintiles.json"},
-      taigatiles:     {type:"sprite-json", src:config.assetsFolder+"sprites/taigatiles.json"},
-      polartiles:     {type:"sprite-json", src:config.assetsFolder+"sprites/polartiles.json"},
-      doodads:        {type:"sprite-json", src:config.assetsFolder+"sprites/doodads.json"}
+    tiles:          {type:"sprite-json", src:config.assetsFolder+"sprites/tiles3.json"},
+    grasstiles:     {type:"sprite-json", src:config.assetsFolder+"sprites/grasstiles.json"},
+    leechedtiles:   {type:"sprite-json", src:config.assetsFolder+"sprites/leechedtiles.json"},
+    prairietiles:   {type:"sprite-json", src:config.assetsFolder+"sprites/prairietiles.json"},
+    deserttiles:    {type:"sprite-json", src:config.assetsFolder+"sprites/deserttiles.json"},
+    plaintiles:     {type:"sprite-json", src:config.assetsFolder+"sprites/plaintiles.json"},
+    taigatiles:     {type:"sprite-json", src:config.assetsFolder+"sprites/taigatiles.json"},
+    polartiles:     {type:"sprite-json", src:config.assetsFolder+"sprites/polartiles.json"},
+    doodads:        {type:"sprite-json", src:config.assetsFolder+"sprites/doodads.json"}
   };
 }(this));

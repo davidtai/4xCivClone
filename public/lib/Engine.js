@@ -89,7 +89,6 @@
         _this.scroll = cc.Node.create();
         return offset.addChild(_this.scroll, 1);
       }, function() {
-        var lazyLayer;
         _this.world.createSprites(_this.scroll, _this.spatialHash);
         _this.overlay = new Overlay({
           tileSize: tileSize,
@@ -99,9 +98,6 @@
         _this.addChild(offset);
         _this.setTouchEnabled(true);
         _this.setKeyboardEnabled(true);
-        lazyLayer = new cc.LazyLayer();
-        lazyLayer.addChild(cc.LayerColor.create(new cc.Color4B(0, 0, 0, 255), _this.windowSize.width, _this.windowSize.height));
-        _this.addChild(lazyLayer);
         return _this.ready = true;
       });
     };
