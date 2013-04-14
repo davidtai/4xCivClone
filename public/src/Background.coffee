@@ -23,6 +23,7 @@ makeBuffer = (width, height, insertAfterSelector)->
 		height = tileMapSize.height
 		
 		@buffer = makeBuffer(width * tileSize.width, height * tileSize.height, 'div')
+		@buffer.id = 'preview'
 		ctx = @buffer.getContext('2d')
 		ctx.webkitImageSmoothingEnabled = false
 		ctx.mozImageSmoothingEnabled = false

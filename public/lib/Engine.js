@@ -107,7 +107,13 @@
     };
 
     Engine.prototype.onKeyDown = function(e) {
-      return this.keyMap[e] = true;
+      if (e === cc.KEY.space) {
+        return this.overlay.setVisible(!this.overlay.isVisible());
+      } else if (e === cc.KEY.escape) {
+        return $('#preview').toggle();
+      } else {
+        return this.keyMap[e] = true;
+      }
     };
 
     Engine.prototype.onKeyUp = function(e) {

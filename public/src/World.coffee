@@ -719,11 +719,11 @@ class @World
 								spriteFrame: tree
 								x: offset.x
 								y: offset.y)
-					if rainfall == "Moist" && temperature == "Temperate"
-						ret.push(
-							spriteFrame: hut
-							x: @tileSize.width/2
-							y: Math.floor(@tileSize.height/2))
+					#if rainfall == "Moist" && temperature == "Temperate"
+						#ret.push(
+						#	spriteFrame: hut
+						#	x: @tileSize.width/2
+						#	y: Math.floor(@tileSize.height/2))
 					if rainfall == "Dry" && temperature == "Temperate"
 						for i in [0...grassCount]
 							offset = randomOffset(dryGrassTuft, @tileSize)

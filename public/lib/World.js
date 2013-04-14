@@ -894,13 +894,6 @@
                 });
               }
             }
-            if (rainfall === "Moist" && temperature === "Temperate") {
-              ret.push({
-                spriteFrame: hut,
-                x: _this.tileSize.width / 2,
-                y: Math.floor(_this.tileSize.height / 2)
-              });
-            }
             if (rainfall === "Dry" && temperature === "Temperate") {
               for (i = _o = 0; 0 <= grassCount ? _o < grassCount : _o > grassCount; i = 0 <= grassCount ? ++_o : --_o) {
                 offset = randomOffset(dryGrassTuft, _this.tileSize);

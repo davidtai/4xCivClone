@@ -33,6 +33,7 @@
       width = tileMapSize.width;
       height = tileMapSize.height;
       this.buffer = makeBuffer(width * tileSize.width, height * tileSize.height, 'div');
+      this.buffer.id = 'preview';
       ctx = this.buffer.getContext('2d');
       ctx.webkitImageSmoothingEnabled = false;
       ctx.mozImageSmoothingEnabled = false;

@@ -109,7 +109,12 @@ worldSize = new cc.Size(tileSize.width * size, tileSize.height * size)
       )
 
   onKeyDown: (e)->
-    @keyMap[e] = true;
+    if e == cc.KEY.space
+      @overlay.setVisible(!@overlay.isVisible())
+    else if e == cc.KEY.escape
+      $('#preview').toggle()
+    else
+      @keyMap[e] = true;
   onKeyUp: (e)->
     @keyMap[e] = false;
 
