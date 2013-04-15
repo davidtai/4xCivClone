@@ -77,3 +77,48 @@ spatialId = 0
 					@activeBins.push bin
 					bin.active = true 
 		console.log("ActiveBins:" + @activeBins.length);
+
+@NodeSpatialHash = class NodeSpatialHash
+	constuctor: (@options)->
+		@tileSize = @options.tileSize
+		@tileMapSize = @options.tileMapSize
+		@parentNode = @options.parentNode
+
+		@border = @options.border
+		@border = if @border > 0 then @border else 0
+		@gridSize = new cc.Size(Math.ceil(@tileMapSize.width / @tileSize.width), Math.ceil(@tileMapSize.height / @tileSize.height))
+
+		@grid = []
+		@activeNodes = []
+		for x in [0...@gridSize.width]
+			@grid[x] = []
+			for y in [0...@gridSize.height]
+				node = new cc.Node()
+				node.setPosition(new cc.Point(x*tileSize.width, y*tileSize.height))
+				node.setVisible(false)
+				@grid[x][y] = node
+
+	hash: (position)->
+		return new cc.Point(Math.floor(position.x/@tileSize.width), Math.floor(position.y/@tileSize.height))
+
+	updateNode: (node, z)->
+		parent = node.getParent()
+		parent.removeChild(node, false) if parent?
+		position = @hash(node.getPosition())
+		@grid[position.x][position.y].addChild(node, z)
+
+		x1 = Math.max(Math.floor((boundingRect.origin.x - @border) / @tileSize.width), 0)
+		y1 = Math.max(Math.floor((boundingRect.origin.y - @border) / @tileSize.height), 0)
+		x2 = Math.min(Math.ceil((boundingRect.size.width + boundingRect.origin.x + @border) / @tileSize.width), @gridSize.width)
+		y2 = Math.min(Math.ceil((boundingRect.size.height + boundingRect.origin.y + @border)  / @tileSize.height), @gridSize.height)
+
+	setVisibleNodes: (boundingRect)->
+		for node in @activeNodes
+			node.setVisible(false)
+
+		for x in [x1...x2]
+			for y in [y1...y2]
+				node = grid[x][y]
+				node.setVisible(true)
+				@activeNodes.push(node)
+				console.log("ActiveBins:" + @activeNodes.length);
