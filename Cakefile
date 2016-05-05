@@ -13,11 +13,11 @@ option '-t', '--test [test]',       'specify test to run'
 option '-v', '--verbose',           'enable verbose test logging'
 
 task 'clean', 'clean project', ->
-  exec 'rm -rf lib'
+  exec 'rm -rf public/release'
 
 task 'build', 'build project', (cb) ->
-  # yield exec 'coffee -c -o lib/ src/'
   yield exec '''
+    coffee -c -o lib/ src/
     rm -rf release
     mkdir release
     mkdir release/public
@@ -29,10 +29,10 @@ task 'build', 'build project', (cb) ->
     cp -r vendor/random release/public/vendor/random
 
     cat vendor/cocos2d-html5/lib/Cocos2d-html5-v2.1.1.min.js lib/World.js lib/Async.js lib/Background.js lib/CustomSprites.js lib/Engine.js lib/Overlay.js lib/patches.js lib/SpatialHash.js > release/public/gamemerged.js
-    uglifyjs release/public/gamemerged.js > release/public/game.js
+    cp release/public/gamemerged.js release/public/game.js
 
-    uglifyjs main.js > release/public/main.js && rm -f release/public/gamemerged.js
-    uglifyjs config.js > release/public/config.js
+    cp main.js release/public/main.js && rm -f release/public/gamemerged.js
+    cp config.js release/public/config.js
 
     cp build/index.js release/index.js
     cp build/package.json release/package.json
@@ -40,9 +40,10 @@ task 'build', 'build project', (cb) ->
     cp build/Procfile release/Procfile
     ''', cwd: 'public/'
 
-  # yield exec 'bebop release/public'
-
 task 'build-min', 'build project', ['build'], ->
+
+task 'server', 'run server', ->
+  yield exec 'bebop public/release/public'
 
 task 'watch', 'watch for changes and recompile project', ->
   exec 'coffee -bcmw -o public/lib/ public/src/'
